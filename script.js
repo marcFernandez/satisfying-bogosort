@@ -1,9 +1,29 @@
+var totalAttempts = 0;
+var reset = false;
+
+var numCount = 10;
+var speedValue = 1;
+// TODO: think if making this come from an API makes sense for global sync
+var numbers = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
+var numberElements = [];
+
 document.addEventListener("DOMContentLoaded", async () => {
+  const totalAttemptsEl = document.getElementById("totalAttempts");
+  const resetButton = document.getElementById("resetButton");
+
   const numbersContainer = document.getElementById("numbersContainer");
 
-  // TODO: think if making this come from an API makes sense for global sync
-  let numbers = generateMockNumbers();
-  let numberElements = [];
+  const numCountSlider = document.getElementById("numCountSlider");
+  const numCountValueSpan = document.getElementById("numCountValue");
+
+  const speedSlider = document.getElementById("speedSlider");
+  const speedValueSpan = document.getElementById("speedValue");
+
+  numCount = parseInt(numCountSlider.value, 10);
+  numCountValueSpan.textContent = numCount;
+
+  speedValue = parseInt(speedSlider.value, 10);
+  speedValueSpan.textContent = speedValue;
 
   async function updateNumbers() {
     try {
@@ -17,10 +37,10 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   function generateMockNumbers() {
     // TODO: make this configurable with a slider
-    const count = 5;
+    const count = numCount;
     const nums = [];
     for (let i = 0; i < count; i++) {
-      nums.push(Math.floor(Math.random() * 100) + 1);
+      nums.push(Math.floor(Math.random() * Math.min(Math.max(numCount, 500), 10)) + 1);
     }
     console.debug("Generated Mock Numbers:", nums);
     return nums;
@@ -62,7 +82,7 @@ document.addEventListener("DOMContentLoaded", async () => {
       const currentNumber = numbers[i];
       const currentElement = numberElements[i];
 
-      await new Promise((resolve) => setTimeout(resolve, 300));
+      await new Promise((resolve) => setTimeout(resolve, 300 * (1 / speedValue)));
 
       if (i === 0) {
         currentElement.classList.add("green");
@@ -86,31 +106,62 @@ document.addEventListener("DOMContentLoaded", async () => {
     return i == numbers.length;
   }
 
-  let sorted = false;
-  while (!sorted) {
-    numberElements.forEach((el) => {
-      el.classList.remove("green", "red");
-    })
-    await updateNumbers();
-    sorted = await startColoring();
-    await new Promise((resolve) => setTimeout(resolve, 800));
+  function updateTotalAttempts() {
+    totalAttemptsEl.textContent = "Total attempts: " + totalAttempts;
   }
+
+
+  numCountSlider.addEventListener("input", () => {
+    numCount = parseInt(numCountSlider.value, 10);
+    numCountValueSpan.textContent = numCount;
+    totalAttempts = 0;
+    updateTotalAttempts();
+    numbers = generateMockNumbers();
+  });
+
+  speedSlider.addEventListener("input", () => {
+    speedValue = parseInt(speedSlider.value, 10);
+    speedValueSpan.textContent = speedValue;
+  });
+
+  resetButton.addEventListener("click", () => {
+    reset = true;
+  });
+
   while (true) {
-    for (let i = 0; i < 4; i++) {
+    let sorted = false;
+    while (!sorted && !reset) {
+      totalAttempts++;
+      updateTotalAttempts();
       numberElements.forEach((el) => {
-        el.classList.remove("green");
+        el.classList.remove("green", "red");
       })
-      await new Promise((resolve) => setTimeout(resolve, 300));
-      numberElements.forEach((el) => {
-        el.classList.add("green");
-      })
-      await new Promise((resolve) => setTimeout(resolve, 300));
+      await updateNumbers();
+      sorted = await startColoring();
+      await new Promise((resolve) => setTimeout(resolve, 800 * (1 / speedValue)));
     }
-    numberElements.forEach((el) => {
-      el.classList.remove("green", "red");
-    })
-    await startColoring();
-    await new Promise((resolve) => setTimeout(resolve, 800));
-    // TODO: do something funny when the bogo sort works
+    while (true && !reset) {
+      for (let i = 0; i < 4; i++) {
+        numberElements.forEach((el) => {
+          el.classList.remove("green");
+        })
+        await new Promise((resolve) => setTimeout(resolve, 300 * (1 / speedValue)));
+        numberElements.forEach((el) => {
+          el.classList.add("green");
+        })
+        await new Promise((resolve) => setTimeout(resolve, 300 * (1 / speedValue)));
+      }
+      numberElements.forEach((el) => {
+        el.classList.remove("green", "red");
+      })
+      await startColoring();
+      await new Promise((resolve) => setTimeout(resolve, 800 * (1 / speedValue)));
+      // TODO: do something funny when the bogo sort works
+    }
+    totalAttempts = 0;
+    updateTotalAttempts();
+    numbers = generateMockNumbers();
+    displayNumbers(numbers);
+    reset = false;
   }
 });

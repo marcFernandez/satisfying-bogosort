@@ -65,3 +65,69 @@ button:hover {
   color: #721c24; /* Dark red text */
   border-color: #dc3545;
 }
+
+.controls {
+  margin-bottom: 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px; /* Space between elements */
+}
+
+.each-control {
+  display: flex;
+  align-items: center;
+  gap: 10px; /* Space between label and input */
+  flex-direction: row;
+}
+
+input[type="range"] {
+  width: 200px;
+  -webkit-appearance: none; /* Remove default styling */
+  appearance: none;
+  background: #d3d3d3; /* Track color */
+  outline: none;
+  opacity: 0.7;
+  transition: opacity 0.2s;
+  border-radius: 5px;
+  height: 8px;
+}
+
+input[type="range"]:hover {
+  opacity: 1;
+}
+
+/* Style the thumb (draggable part) */
+input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 20px;
+  height: 20px;
+  background: #007bff;
+  cursor: grab;
+  border-radius: 50%;
+  box-shadow: 0 0 2px rgba(0, 0, 0, 0.3);
+}
+
+input[type="range"]::-moz-range-thumb {
+  width: 20px;
+  height: 20px;
+  background: #007bff;
+  cursor: grab;
+  border-radius: 50%;
+  box-shadow: 0 0 2px rgba(0, 0, 0, 0.3);
+}
+
+.range-value {
+  font-weight: bold;
+  font-size: 1.1em;
+  color: #007bff;
+  min-width: 30px; /* To prevent jumping when value changes */
+  text-align: center;
+}
+
+label {
+  font-weight: bold;
+  min-width: 80px; /* Ensure labels have consistent width */
+  color: #333;
+}

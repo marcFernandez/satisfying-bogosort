@@ -8,8 +8,33 @@
   </head>
   <body>
     <h1>Bogo-sort Visualizer</h1>
-    <div id="numbersContainer">
+    <div class="controls">
+      <div class="each-control">
+        <label for="numCountSlider">Elements:</label>
+        <input
+          type="range"
+          id="numCountSlider"
+          min="4"
+          max="200"
+          value="10"
+        />
+        <span id="numCountValue" class="range-value">10</span>
+      </div>
+      <div class="each-control">
+        <label for="speedSlider">Speed:</label>
+        <input
+          type="range"
+          id="speedSlider"
+          min="1"
+          max="10"
+          value="1"
+        />
+        <span id="speedValue" class="range-value">1</span>
+      </div>
     </div>
+    <div id="numbersContainer"></div>
+    <h2 id="totalAttempts">Total attempts: 0</h2>
+    <button id="resetButton">Reset</button>
     <script src="script.js"></script>
   </body>
 </html>
