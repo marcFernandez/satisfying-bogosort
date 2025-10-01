@@ -88,7 +88,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         currentElement.classList.add("green");
         console.debug(`Index ${i}: ${currentNumber} - First number, green.`);
       } else {
-        if (currentNumber > previousNumber) {
+        if (currentNumber >= previousNumber) {
           currentElement.classList.add("green");
           console.debug(
             `Index ${i}: ${currentNumber} > ${previousNumber} - Green.`
